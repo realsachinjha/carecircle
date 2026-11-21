@@ -1,11 +1,11 @@
 # CareCircle Development Progress
 
 ## Current Phase
-- Phase 1 — Accounts and access (COMPLETED, committed and pushed)
+- Phase 2 — Documents, consent, and AI parsing (in progress)
 
 ## Completed Phases
-- Phase 0 — Foundation (commit f80baec, pushed)
-- Phase 1 — Accounts and access (commit pending push)
+- Phase 0 — Foundation (committed and pushed)
+- Phase 1 — Accounts and access (committed and pushed)
 
 ## Environment
 - Node.js: 22.22.2
@@ -16,15 +16,9 @@
 - Next.js: 16.4.6
 
 ## Implementation Status
-- Phase 0: complete
-- Phase 1: tasks 1-12 complete
-  - All exit checks pass:
-    - lint: exit 0
-    - typecheck: exit 0
-    - test: 27 passed (8 P0 + 19 P1)
-    - db:test: 35 passed
-    - build: succeeds
-    - test:e2e: 20 passed (both desktop and phone projects)
+- Phase 0: complete (7 commits)
+- Phase 1: complete (6 commits), all exit checks pass
+- Phase 2: Task 1 (migration) in progress
 
 ## Features Completed
 - Authentication (sign-up, sign-in via password/magic-link/code, sign-out, callback)
@@ -49,17 +43,15 @@
 - sign-in page uses dynamic = "force-dynamic"
 
 ## Files Changed
-- All Phase 1 files (see git status)
+- All Phase 0 and Phase 1 files
 
 ## Commit Hashes
-- f80baec docs(p0): record development progress
-- 90b2c92 chore(p0): foundation
+- Phase 0: 90b2c92, f80baec
+- Phase 1: 2ea8058, 481447f, 302238e, 91f9254, 4267568
 
 ## Push Status
-- Phase 0 pushed to https://github.com/realsachinjha/carecircle.git (main)
-- Phase 1 not yet committed/pushed
+- All phases pushed to https://github.com/realsachinjha/carecircle.git (main)
 
 ## Remaining Tasks
-- Commit Phase 1 and push
-- Phase 2 — Documents and AI
+- Phase 2 tasks 1-12
 - Phases P3-P6
