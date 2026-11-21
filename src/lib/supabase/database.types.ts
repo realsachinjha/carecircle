@@ -75,6 +75,38 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"consents": {
+                  Row: {
+                    "given_at": string,"given_by": string,"id": string,"notice_version": string,"patient_id": string,"purpose": string,"withdrawn_at": string | null,"withdrawn_by": string | null
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "given_at"?: string,"given_by": string,"id"?: string,"notice_version": string,"patient_id": string,"purpose"?: string,"withdrawn_at"?: string | null,"withdrawn_by"?: string | null
+                  }
+                  Update: {
+                    "given_at"?: string,"given_by"?: string,"id"?: string,"notice_version"?: string,"patient_id"?: string,"purpose"?: string,"withdrawn_at"?: string | null,"withdrawn_by"?: string | null
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "consents_given_by_fkey"
+      columns: ["given_by"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "consents_patient_id_fkey"
+      columns: ["patient_id"]
+isOneToOne: false
+      referencedRelation: "patients"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "consents_withdrawn_by_fkey"
+      columns: ["withdrawn_by"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    }
+                  ]
                 },"invites": {
                   Row: {
                     "created_at": string,"created_by": string,"email": string,"expires_at": string,"id": string,"patient_id": string,"revoked_at": string | null,"role": string,"token_hash": string,"used_at": string | null,"used_by": string | null
@@ -102,6 +134,32 @@ isOneToOne: false
     },{
       foreignKeyName: "invites_used_by_fkey"
       columns: ["used_by"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"medical_documents": {
+                  Row: {
+                    "clinic_name": string | null,"created_at": string,"deleted_at": string | null,"doctor_name": string | null,"document_type": string,"extraction_error": string | null,"extraction_raw": Json | null,"extraction_status": string,"file_path": string,"id": string,"issue_date": string | null,"mime_type": string,"parse_started_at": string | null,"patient_id": string,"sha256": string,"size_bytes": number,"uploaded_by": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "clinic_name"?: string | null,"created_at"?: string,"deleted_at"?: string | null,"doctor_name"?: string | null,"document_type": string,"extraction_error"?: string | null,"extraction_raw"?: Json | null,"extraction_status"?: string,"file_path": string,"id": string,"issue_date"?: string | null,"mime_type": string,"parse_started_at"?: string | null,"patient_id": string,"sha256": string,"size_bytes": number,"uploaded_by": string
+                  }
+                  Update: {
+                    "clinic_name"?: string | null,"created_at"?: string,"deleted_at"?: string | null,"doctor_name"?: string | null,"document_type"?: string,"extraction_error"?: string | null,"extraction_raw"?: Json | null,"extraction_status"?: string,"file_path"?: string,"id"?: string,"issue_date"?: string | null,"mime_type"?: string,"parse_started_at"?: string | null,"patient_id"?: string,"sha256"?: string,"size_bytes"?: number,"uploaded_by"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "medical_documents_patient_id_fkey"
+      columns: ["patient_id"]
+isOneToOne: false
+      referencedRelation: "patients"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "medical_documents_uploaded_by_fkey"
+      columns: ["uploaded_by"]
 isOneToOne: false
       referencedRelation: "profiles"
       referencedColumns: ["id"]
@@ -202,11 +260,23 @@ isOneToOne: false
             "accept_invite":
 { Args: { "p_token_hash": string }; Returns: Json
                            },
+"claim_document_for_parse":
+{ Args: { "p_document": string }; Returns: Json
+                           },
 "create_invite":
 { Args: { "p_email": string,"p_patient": string,"p_role": string,"p_token_hash": string }; Returns: string
                            },
 "create_patient":
 { Args: { "p_blood_group"?: string,"p_date_of_birth": string,"p_emergency_contact_name"?: string,"p_emergency_contact_phone"?: string,"p_full_name": string,"p_missed_after_minutes": number,"p_notes"?: string,"p_physician_name"?: string,"p_physician_phone"?: string,"p_primary_condition"?: string,"p_timezone": string }; Returns: string
+                           },
+"document_file_readable":
+{ Args: { "p_name": string }; Returns: boolean
+                           },
+"give_consent":
+{ Args: { "p_notice_version": string,"p_patient": string }; Returns: string
+                           },
+"has_active_consent":
+{ Args: { "p_patient": string }; Returns: boolean
                            },
 "has_role":
 { Args: { "p_patient": string,"p_roles": (string)[] }; Returns: boolean
@@ -216,6 +286,12 @@ isOneToOne: false
                            },
 "notify_members":
 { Args: { "p_data": Json,"p_exclude"?: string,"p_kind": string,"p_patient": string,"p_roles": (string)[] }; Returns: number
+                           },
+"record_parse_result":
+{ Args: { "p_document": string,"p_error_code": string,"p_ok": boolean,"p_raw": Json }; Returns: string
+                           },
+"register_document":
+{ Args: { "p_clinic_name"?: string,"p_doctor_name"?: string,"p_document": string,"p_document_type": string,"p_issue_date"?: string,"p_mime_type": string,"p_patient": string,"p_sha256": string,"p_size_bytes": number }; Returns: string
                            },
 "remove_patient_login":
 { Args: { "p_patient": string }; Returns: undefined
@@ -232,8 +308,20 @@ isOneToOne: false
 "shares_patient":
 { Args: { "p_user": string }; Returns: boolean
                            },
+"try_date":
+{ Args: { "p_value": string }; Returns: string
+                           },
+"try_uuid":
+{ Args: { "p_value": string }; Returns: string
+                           },
+"unregistered_file_readable":
+{ Args: { "p_name": string }; Returns: boolean
+                           },
 "update_my_profile":
 { Args: { "p_full_name": string,"p_phone": string }; Returns: undefined
+                           },
+"withdraw_consent":
+{ Args: { "p_patient": string }; Returns: undefined
                            }
           }
           Enums: {
