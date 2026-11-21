@@ -1,6 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
 import { cookies, headers } from "next/headers";
 import { getPublicSupabaseConfig } from "./config";
+import type { Database } from "./database.types";
 
 export async function createSupabaseServerClient() {
   const config = getPublicSupabaseConfig();
@@ -8,7 +9,7 @@ export async function createSupabaseServerClient() {
   const headerStore = await headers();
   const forwarded = headerStore.get("x-forwarded-for") ?? "";
   const clientIp = forwarded.split(",")[0]?.trim() ?? "";
-  return createServerClient(config.url, config.anonKey, {
+  return createServerClient<Database>(config.url, config.anonKey, {
     global: {
       headers: clientIp ? { "x-client-ip": clientIp } : {},
     },
