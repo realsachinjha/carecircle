@@ -6,6 +6,7 @@ type Tab = { href: (patientId: string) => string; label: string; roles: PatientR
 export const PATIENT_TABS: Tab[] = [
   { href: (id) => `/patients/${id}`, label: strings.tabs.overview, roles: ["OWNER", "CAREGIVER", "VIEWER"] },
   { href: (id) => `/patients/${id}/documents`, label: strings.tabs.documents, roles: ["OWNER", "CAREGIVER", "VIEWER"] },
+  { href: (id) => `/patients/${id}/medicines`, label: strings.tabs.medicines, roles: ["OWNER", "CAREGIVER", "VIEWER"] },
   { href: (id) => `/patients/${id}/people`, label: strings.tabs.people, roles: ["OWNER", "CAREGIVER", "VIEWER"] },
 ];
 

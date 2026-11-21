@@ -38,8 +38,7 @@ test("FR-4.2 FR-4.1 FR-5.1 owner consents, uploads, and reads with AI", async ({
   await page.getByRole("button", { name: "Read with AI" }).click();
   await page.getByText("Ready to check").waitFor();
   await expect(page.getByText("Demo mode: this answer is recorded, not read from your file.")).toBeVisible();
-  await expect(page.locator("text=Metformin").filter({ visible: true }).first()).toBeVisible();
-  await expect(page.getByText(/Some rows were hard to read/)).toBeVisible();
+  await expect(page.getByLabel("Medicine name").first()).toHaveValue("Metformin");
 });
 
 test("FR-4.1 a renamed text file is refused", async ({ page }) => {

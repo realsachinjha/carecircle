@@ -4,10 +4,12 @@ import { DocumentPreview } from "@/components/documents/document-preview";
 import { DocumentDetailsForm } from "@/components/documents/document-details-form";
 import { StatusBadge } from "@/components/documents/status-badge";
 import { ParseButton } from "@/components/documents/parse-button";
+import { ApprovalEditor } from "@/components/medicines/approval-editor";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { ExtractionTable } from "@/components/documents/extraction-table";
 import { getEnv } from "@/lib/env";
 import { extractionSchema, type Extraction } from "@/lib/gemini/schema";
+import { todayInZone } from "@/lib/time/local-date";
 import { strings } from "@/strings/en";
 
 export default async function DocumentPage({
@@ -25,7 +27,11 @@ export default async function DocumentPage({
     return <div>not found</div>;
   }
   const supabase = await createSupabaseServerClient();
-  const { data: doc } = await supabase.from("medical_documents").select("*").eq("id", documentId).maybeSingle();
+  const { data: doc } = await supabase
+    .from("medical_documents")
+    .select("*, patients(timezone)")
+    .eq("id", documentId)
+    .maybeSingle();
   if (!doc) {
     return <div>not found</div>;
   }
@@ -35,6 +41,7 @@ export default async function DocumentPage({
     (doc.extraction_status === "PARSED" || doc.extraction_status === "VERIFIED") &&
     doc.extraction_raw &&
     extractionSchema.safeParse(doc.extraction_raw).success;
+  const today = todayInZone(doc.patients?.timezone ?? "Asia/Kolkata");
 
   return (
     <div className="mx-auto flex max-w-4xl flex-col gap-4 p-4">
@@ -56,7 +63,10 @@ export default async function DocumentPage({
           {doc.extraction_status === "FAILED" && doc.extraction_error && (
             <p className="text-base text-danger">{strings.errors[doc.extraction_error as keyof typeof strings.errors]}</p>
           )}
-          {showExtraction && <ExtractionTable extraction={doc.extraction_raw as unknown as Extraction} demoMode={getEnv().demoMode} />}
+          {showExtraction && canEdit && (
+            <ApprovalEditor documentId={documentId} patientId={patientId} extraction={doc.extraction_raw as Extraction} today={today} demoMode={getEnv().demoMode} />
+          )}
+          {showExtraction && !canEdit && <ExtractionTable extraction={doc.extraction_raw as unknown as Extraction} demoMode={getEnv().demoMode} />}
         </div>
       </div>
     </div>

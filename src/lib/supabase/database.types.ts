@@ -165,6 +165,90 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"medication_reminders": {
+                  Row: {
+                    "acknowledged_at": string | null,"acknowledged_by": string | null,"created_at": string,"id": string,"patient_id": string,"schedule_id": string,"scheduled_for": string,"status": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "acknowledged_at"?: string | null,"acknowledged_by"?: string | null,"created_at"?: string,"id"?: string,"patient_id": string,"schedule_id": string,"scheduled_for": string,"status"?: string
+                  }
+                  Update: {
+                    "acknowledged_at"?: string | null,"acknowledged_by"?: string | null,"created_at"?: string,"id"?: string,"patient_id"?: string,"schedule_id"?: string,"scheduled_for"?: string,"status"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "medication_reminders_acknowledged_by_fkey"
+      columns: ["acknowledged_by"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "medication_reminders_schedule_id_patient_id_fkey"
+      columns: ["schedule_id","patient_id"]
+isOneToOne: false
+      referencedRelation: "medication_schedules"
+      referencedColumns: ["id","patient_id"]
+    }
+                  ]
+                },"medication_schedules": {
+                  Row: {
+                    "created_at": string,"end_date": string | null,"frequency_type": string,"id": string,"interval_days": number | null,"medication_id": string,"patient_id": string,"slot": string,"start_date": string,"target_time": string,"weekdays": (number)[] | null
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"end_date"?: string | null,"frequency_type": string,"id"?: string,"interval_days"?: number | null,"medication_id": string,"patient_id": string,"slot": string,"start_date": string,"target_time": string,"weekdays"?: (number)[] | null
+                  }
+                  Update: {
+                    "created_at"?: string,"end_date"?: string | null,"frequency_type"?: string,"id"?: string,"interval_days"?: number | null,"medication_id"?: string,"patient_id"?: string,"slot"?: string,"start_date"?: string,"target_time"?: string,"weekdays"?: (number)[] | null
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "medication_schedules_medication_id_patient_id_fkey"
+      columns: ["medication_id","patient_id"]
+isOneToOne: false
+      referencedRelation: "medications"
+      referencedColumns: ["id","patient_id"]
+    }
+                  ]
+                },"medications": {
+                  Row: {
+                    "created_at": string,"created_by": string,"document_id": string | null,"dosage": string,"id": string,"instructions": string | null,"name": string,"patient_id": string,"replaces_id": string | null,"status": string,"stopped_at": string | null
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"created_by": string,"document_id"?: string | null,"dosage": string,"id"?: string,"instructions"?: string | null,"name": string,"patient_id": string,"replaces_id"?: string | null,"status"?: string,"stopped_at"?: string | null
+                  }
+                  Update: {
+                    "created_at"?: string,"created_by"?: string,"document_id"?: string | null,"dosage"?: string,"id"?: string,"instructions"?: string | null,"name"?: string,"patient_id"?: string,"replaces_id"?: string | null,"status"?: string,"stopped_at"?: string | null
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "medications_created_by_fkey"
+      columns: ["created_by"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "medications_document_id_fkey"
+      columns: ["document_id"]
+isOneToOne: false
+      referencedRelation: "medical_documents"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "medications_patient_id_fkey"
+      columns: ["patient_id"]
+isOneToOne: false
+      referencedRelation: "patients"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "medications_replaces_id_fkey"
+      columns: ["replaces_id"]
+isOneToOne: false
+      referencedRelation: "medications"
+      referencedColumns: ["id"]
+    }
+                  ]
                 },"notifications": {
                   Row: {
                     "created_at": string,"data": NonNullable<Json>,"id": string,"kind": string,"patient_id": string | null,"read_at": string | null,"user_id": string
@@ -260,6 +344,15 @@ isOneToOne: false
             "accept_invite":
 { Args: { "p_token_hash": string }; Returns: Json
                            },
+"add_medication":
+{ Args: { "p_medicine": Json,"p_patient": string }; Returns: string
+                           },
+"approve_document":
+{ Args: { "p_document": string,"p_medicines": Json }; Returns: number
+                           },
+"change_medication":
+{ Args: { "p_medication": string,"p_medicine": Json }; Returns: string
+                           },
 "claim_document_for_parse":
 { Args: { "p_document": string }; Returns: Json
                            },
@@ -272,6 +365,9 @@ isOneToOne: false
 "document_file_readable":
 { Args: { "p_name": string }; Returns: boolean
                            },
+"generate_reminders":
+{ Args: { "p_now"?: string }; Returns: number
+                           },
 "give_consent":
 { Args: { "p_notice_version": string,"p_patient": string }; Returns: string
                            },
@@ -280,6 +376,12 @@ isOneToOne: false
                            },
 "has_role":
 { Args: { "p_patient": string,"p_roles": (string)[] }; Returns: boolean
+                           },
+"insert_medication":
+{ Args: { "p_document": string,"p_medicine": Json,"p_patient": string,"p_replaces": string }; Returns: string
+                           },
+"mark_missed":
+{ Args: { "p_now"?: string }; Returns: number
                            },
 "my_role":
 { Args: { "p_patient": string }; Returns: string
@@ -307,6 +409,12 @@ isOneToOne: false
                            },
 "shares_patient":
 { Args: { "p_user": string }; Returns: boolean
+                           },
+"stop_medication":
+{ Args: { "p_medication": string }; Returns: undefined
+                           },
+"stop_medication_rows":
+{ Args: { "p_medication": string }; Returns: undefined
                            },
 "try_date":
 { Args: { "p_value": string }; Returns: string

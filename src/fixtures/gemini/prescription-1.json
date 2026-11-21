@@ -1,0 +1,26 @@
+{
+  "doctor_name": "Dr. Smith",
+  "clinic_name": "City Clinic",
+  "issue_date": "2026-03-10",
+  "medicines": [
+    {
+      "name": "Metformin",
+      "dosage": "500mg",
+      "frequency_per_day": 2,
+      "slots": ["MORNING", "EVENING"],
+      "duration_days": 30,
+      "instructions": "Take with food",
+      "confidence": "HIGH"
+    },
+    {
+      "name": "Amlodipine",
+      "dosage": "5mg",
+      "frequency_per_day": 1,
+      "slots": ["MORNING"],
+      "duration_days": null,
+      "instructions": null,
+      "confidence": "HIGH"
+    }
+  ],
+  "confidence": "HIGH"
+}
